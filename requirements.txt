@@ -9,3 +9,5 @@ tavily-python
 python-dotenv
 langchain-community
 langchain_core
+setuptools
+distutils
