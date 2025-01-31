@@ -8,6 +8,8 @@ from utils.logger import setup_logger
 
 from utils.agent import process_prediction
 
+from fastapi.middleware.cors import CORSMiddleware
+
 # Initialize
 app = FastAPI()
 logger = None
@@ -15,7 +17,7 @@ logger = None
 origins = [
     "http://localhost",
     "http://localhost:8080",
-    "http://89.232.185.42/"
+    "http://89.232.185.42"
 ]
 
 app.add_middleware(
