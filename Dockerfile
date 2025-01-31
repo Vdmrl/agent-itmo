@@ -8,6 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod +x start.sh
-
-CMD ["./start.sh"]
+CMD gunicorn main:app --workers 8 --worker-class uvicorn.workers.UvicornWorker --backlog 2048 --worker-connections 1000 --keep-alive 5 --timeout 300 --bind 0.0.0.0:8080

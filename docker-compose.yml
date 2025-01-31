@@ -1,22 +1,33 @@
 version: "3.8"
 
+networks:
+  dev:
+
 services:
-  fastapi-service:
-    build: .
-    container_name: fastapi-baseline
+  nginx:
+    image: nginx:stable-alpine
     ports:
       - "8080:8080"
+      - "443:443"
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    depends_on:
+      - fastapi-service
+    networks:
+      - dev
+  fastapi-service:
+    build: .
+    container_name: fastapi-service
     restart: unless-stopped
     environment:
       - TZ=UTC
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LANGCHAIN_TRACING_V2=false
+      - LANGSMITH_ENDPOINT=${LANGSMITH_ENDPOINT}
+      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+      - LANGSMITH_PROJECT=${LANGSMITH_PROJECT}
     volumes:
       - ./logs:/app/logs
-    # Если нужно GPU
-    # runtime: nvidia
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: all
-    #           capabilities: [gpu]
+    networks:
+      - dev

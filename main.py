@@ -6,9 +6,26 @@ from pydantic import HttpUrl
 from schemas.request import PredictionRequest, PredictionResponse
 from utils.logger import setup_logger
 
+from utils.agent import process_prediction
+
 # Initialize
 app = FastAPI()
 logger = None
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    "http://89.232.185.42/"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 @app.on_event("startup")
@@ -53,17 +70,14 @@ async def log_requests(request: Request, call_next):
 async def predict(body: PredictionRequest):
     try:
         await logger.info(f"Processing prediction request with id: {body.id}")
-        # Здесь будет вызов вашей модели
-        answer = 1  # Замените на реальный вызов модели
-        sources: List[HttpUrl] = [
-            HttpUrl("https://itmo.ru/ru/"),
-            HttpUrl("https://abit.itmo.ru/"),
-        ]
 
+        answer, reasoning, sources = await process_prediction(body, logger)
+
+        await logger.info(f"{id}, {answer}, {reasoning}, {sources}")
         response = PredictionResponse(
             id=body.id,
             answer=answer,
-            reasoning="Из информации на сайте",
+            reasoning=reasoning,
             sources=sources,
         )
         await logger.info(f"Successfully processed request {body.id}")

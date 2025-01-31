@@ -1,0 +1,12 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv('.env')
+
+LANGCHAIN_TRACING_V2=os.getenv("LANGSMITH_TRACING")
+LANGSMITH_ENDPOINT=os.getenv("LANGSMITH_ENDPOINT")
+LANGSMITH_API_KEY=os.getenv("LANGSMITH_API_KEY")
+LANGSMITH_PROJECT=os.getenv("LANGSMITH_PROJECT")
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
